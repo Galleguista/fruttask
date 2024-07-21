@@ -1,0 +1,13 @@
+---
+import FormComponent from "../../components/FormComponent.astro";
+
+// src/pages/sign-up.astro
+
+const fieldsSignUp = [
+  { id: "fullname", type: "text", placeholder: "Full Name", label: "Full Name", required: true, minlength: "3", error: "Name must be at least 3 characters long" },
+  { id: "email", type: "email", placeholder: "Email Address", label: "Email Address", required: true, error: "Please enter a valid Email" },
+  { id: "password", type: "password", placeholder: "Password", label: "Password", required: true, error: "Passwords cannot be empty or do not match" },
+  { id: "confirm-password", type: "password", placeholder: "Confirm Password", label: "Confirm Password", required: true }
+];
+---
+  <FormComponent formType="sign-up" fields={fieldsSignUp} />

@@ -1,0 +1,70 @@
+---
+// src/components/KanbanColumn.astro
+import KanbanCard from "./KanbanCard.astro";
+import Modal from "./Modal.astro";
+import { useState, useEffect } from "react";
+
+const { id, color, status } = Astro.props;
+
+const createFields = [
+  { id: "title", type: "text", placeholder: "Title", label: "Title", required: true },
+  { id: "description", type: "textarea", placeholder: "Description", label: "Description", required: true }
+];
+
+// Estado para las tareas
+const [tasks, setTasks] = useState([]);
+
+// Función para cargar tareas
+async function loadTasks() {
+  const response = await fetch('/tasks');
+  const data = await response.json();
+  setTasks(data);
+}
+
+// Función para crear una nueva tarea
+async function createTask(task) {
+  const response = await fetch('/tasks', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(task)
+  });
+  if (response.ok) {
+    loadTasks();
+  } else {
+    console.error('Error creating task');
+  }
+}
+
+useEffect(() => {
+  loadTasks();
+}, []);
+---
+
+<div class="bg-white rounded px-2 py-2 movable-items max-w-">
+  <div class="flex flex-row justify-between items-center mb-2 mx-1">
+    <div class="flex items-center">
+      <h2 class={`text-sm w-max px-1 rounded mr-2 text-gray-700 ${color}`}>
+        {status}
+      </h2>
+      <p class="text-gray-400 text-sm">{tasks.length}</p>
+    </div>
+    <button onclick={`document.getElementById('dialog-create-${id}').showModal()`} class="flex items-center text-gray-300">
+      <p class="text-2xl transition ease-in-out delay-150 text-blue-500 hover:-translate-y-1 hover:scale-110 hover:text-indigo-500 duration-300 cursor-pointer">+</p>
+    </button>
+  </div>
+
+  {tasks.map(task => (
+    <KanbanCard key={task.id} task={task} />
+  ))}
+
+  <button onclick={`document.getElementById('dialog-create-${id}').showModal()`}
+    class="transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 flex flex-row items-center rounded mt-2 pb-1 px-4 w-min hover:cursor-pointer text-white">
+    <p class="rounded mr-2 text-2xl">+</p>
+    <p class="rounded pt-1 ml-2 text-sm">New</p>
+  </button>
+
+  <Modal id={`dialog-create-${id}`} title="Create Task" formType="create-task" fields={createFields} onSubmit={createTask}>
+  </Modal>
+</div>

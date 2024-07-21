@@ -1,0 +1,11 @@
+---
+import FormComponent from "../../components/FormComponent.astro";
+
+
+const fieldsSignIn = [
+  { id: "email", type: "email", placeholder: "Email Address", label: "Email Address", required: true, error: "Please enter a valid Email" },
+  { id: "password", type: "password", placeholder: "Password", label: "Password", required: true }
+];
+---
+
+<FormComponent formType="sign-in" fields={fieldsSignIn} />
